@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: foo-deployment
+  name: foo-deployment
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo-deployment
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: foo-deployment
+    spec:
+      containers:
+      - image: "HOST:PORT/IMAGE:VERSION" 
+        name: "IMAGE"
+        env:
+        - name: ENV_STRING 
+          value: "EXAMPLE_TEXT_ENV_STRING"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: foo-deployment
+  name: foo-deployment
+  namespace: prod
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: foo-deployment
+  type: LoadBalancer
+status:
+  loadBalancer: {}

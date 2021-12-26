@@ -1,0 +1,23 @@
+#stages:
+#  - build
+#  - deploy-prod
+
+build:
+  before_script: 
+    - docker login -u $CI_REPO_USER -p $CI_REPO_PASSWD http://$CI_REPO_HOST:$CI_REPO_PORT/ 
+  stage: build
+  script:
+    - docker build -t $CI_REPO_HOST:$CI_REPO_PORT/$CI_IMAGE:$CI_COMMIT_SHA . 
+    - docker push $CI_REPO_HOST:$CI_REPO_PORT/$CI_IMAGE:$CI_COMMIT_SHA
+
+deploy-main:
+  stage: deploy
+  script:
+    - echo "Changing vars ..."
+    - sed -i "s/HOST/$CI_REPO_HOST/g" ./foo-deployment.yaml && sed -i "s/PORT/$CI_REPO_PORT/g" ./foo-deployment.yaml && sed -i "s/IMAGE/$CI_IMAGE/g" ./foo-deployment.yaml && sed -i "s/VERSION/$CI_COMMIT_SHA/g" ./foo-deployment.yaml
+    - sed -i "s/EXAMPLE_TEXT_ENV_STRING/$ENV_STRING/g" ./foo-deployment.yaml
+
+    - echo "Deploying on master ..."
+    - sudo k3s kubectl apply -f foo-deployment.yaml
+  only:
+    - main
