@@ -13,8 +13,6 @@ RUN \
      rm -f /var/www/html/index.html                                      && \
      g++ /workspace/foo.c -o /workspace/foo 
 
-
-
 RUN echo -e "[program:httpd]\n\
 command=/usr/sbin/httpd -DFOREGROUND\n\
 process_name=%(program_name)s ; process_name expr (default %(program_name)s)\n\

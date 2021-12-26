@@ -1,7 +1,3 @@
-#stages:
-#  - build
-#  - deploy-prod
-
 build:
   before_script: 
     - docker login -u $CI_REPO_USER -p $CI_REPO_PASSWD http://$CI_REPO_HOST:$CI_REPO_PORT/ 
